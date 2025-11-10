@@ -211,28 +211,28 @@ _____                                                                    _____
             --border-animation-color: var(--border-color);
         }
         body.light-pink-theme {
-            --border-color: #e83e8c;
+            --border-color: #e100ff;
             --background-color: #f8f8f8;
             --text-color: #333;
-            --shadow-color: rgba(232, 62, 140, 0.2);
-            --logo-background-color: #e83e8c;
+            --shadow-color: rgba(247, 32, 182, 0.3);
+            --logo-background-color: #e100ff;
             --logo-icon-color: #fff;
             --button-color: var(--border-color);
             --button-text-color: white;
-            --button-hover-color: #d7317e;
+            --button-hover-color: #bd1ad3;
             --button-hover-text-color: white;
             --border-animation-color: var(--border-color);
         }
         body.dark-pink-theme {
-            --border-color: #e83e8c;
+            --border-color: #e100ff;
             --background-color: #121212;
             --text-color: #fff;
-            --shadow-color: rgba(232, 62, 140, 0.3);
-            --logo-background-color: #e83e8c;
+            --shadow-color: rgba(247, 32, 182, 0.3);
+            --logo-background-color: #e100ff;
             --logo-icon-color: #000;
             --button-color: var(--border-color);
             --button-text-color: white;
-            --button-hover-color: #d7317e;
+            --button-hover-color: #bd1ad3;
             --button-hover-text-color: white;
             --border-animation-color: var(--border-color);
         }
@@ -3108,6 +3108,24 @@ _____                                                                    _____
             </div>
             <div class="zenith-notification" id="auth-error"></div>
         </div>
+        <div id="maintenance-blocker" class="zenith-loading-screen hidden" style="z-index: 10000; background: var(--background-color);">
+            <div class="zenith-logo">
+                <div class="zenith-logo-glow"></div>
+                <div class="zenith-logo-icon" style="background: linear-gradient(135deg, #dc3545 0%, #a72a35 100%);">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12,2L13.8,8.2L20,9L15.5,13.5L16.8,20L12,16.8L7.2,20L8.5,13.5L4,9L10.2,8.2L12,2Z"/>
+                    </svg>
+                </div>
+                <div class="zenith-logo-text" style="color: #dc3545;">ТЕХ.РАБОТЫ</div>
+                <div class="zenith-logo-subtext">ZENITH PROJECT</div>
+            </div>
+            <div class="zenith-status" id="maintenance-message" style="color: #dc3545; font-size: 20px; margin: 20px 0;">
+                Проект временно недоступен
+            </div>
+            <div class="zenith-status" id="maintenance-since-display" style="font-size: 14px; opacity: 0.8; margin-top: 10px;">
+                Тех.работы начаты: —
+            </div>
+        </div>
     </div>
     <div id="welcome-screen">
         <span id="welcome-text"></span>
@@ -3362,16 +3380,6 @@ _____                                                                    _____
                     </div>
                 </div>
             </div>
-            <div class="switch-container feature-disabled">
-                <span>Анимация обводки<span class="beta-badge">BETA</span></span>
-                <label class="switch">
-                    <input type="checkbox" id="border-animation-toggle" onchange="toggleBorderAnimation()">
-                    <span class="slider"></span>
-                </label>
-                <div class="disabled-overlay">
-                    <span>В разработке</span>
-                </div>
-            </div>
             <div class="switch-container">
                 <span>Анимация тегов<span class="beta-badge">BETA</span></span>
                 <label class="switch">
@@ -3403,6 +3411,16 @@ _____                                                                    _____
                     <span>Недоступно</span>
                 </div>
             </div>
+            <div class="switch-container feature-disabled">
+                <span>Анимация обводки<span class="beta-badge">BETA</span></span>
+                <label class="switch">
+                    <input type="checkbox" id="border-animation-toggle" onchange="toggleBorderAnimation()">
+                    <span class="slider"></span>
+                </label>
+                <div class="disabled-overlay">
+                    <span>В разработке</span>
+                </div>
+            </div>
         </div>
         <div id="admin" class="content">
             <h2>Админ панель</h2>
@@ -3429,14 +3447,11 @@ _____                                                                    _____
                     </div>
                     <div class="admin-tab" onclick="switchAdminTab('logs')">
                         <i class="admin-icon fas fa-clipboard-list"></i>
-                        <span>Логи<span class="beta-badge">BETA</span></span>
+                        <span>Логи</span>
                     </div>
-                    <div class="admin-tab feature-disabled">
-                        <i class="admin-icon fas fa-cog"></i>
-                        <span>Режим <span class="dev-badge">СКОРО</span></span>
-                        <div class="disabled-overlay">
-                            <span>В разработке</span>
-                        </div>
+                    <div class="admin-tab" onclick="switchAdminTab('mode')">
+                        <i class="admin-icon fas fa-tools"></i>
+                        <span>Режим</span>
                     </div>
                 </div>
                 <div id="users-content" class="admin-content active">
@@ -3482,7 +3497,35 @@ _____                                                                    _____
                     <div class="logs-list" id="logs-list"></div>
                 </div>
                 <div id="mode-content" class="admin-content">
-                    <p>Настры</p>
+                    <h2>Режимы проекта</h2>
+                    <div class="admin-item" style="flex-direction: column; align-items: flex-start; gap: 16px; padding: 24px;">
+                        <div style="display: flex; align-items: center; gap: 16px; width: 100%;">
+                            <label style="font-size: 18px; font-weight: 600; color: var(--text-color);">
+                                Статус проекта:
+                            </label>
+                            <div class="switch-container" style="margin: 0; padding: 0; background: transparent; border: none;">
+                                <span></span>
+                                <label class="switch" style="margin: 0;">
+                                    <input type="checkbox" id="maintenance-toggle" onchange="toggleMaintenanceMode()">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <span id="maintenance-status-text" style="font-weight: bold; font-size: 16px;">
+                                Открыт
+                            </span>
+                        </div>
+                        <div id="maintenance-info" class="info-section" style="width: 100%; display: none;">
+                            <div class="info-label">
+                                <i class="fas fa-tools"></i> Технические работы
+                            </div>
+                            <div class="info-value" id="maintenance-since-text">
+                                —
+                            </div>
+                        </div>
+                    </div>
+                    <h3 style="margin-top: 30px;">История переключений</h3>
+                    <div id="maintenance-log-list" style="display: flex; flex-direction: column; gap: 12px;">
+                    </div>
                 </div>
             </div>
         </div>
